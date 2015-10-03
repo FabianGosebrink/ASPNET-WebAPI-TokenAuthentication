@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Web.Http;
 
 namespace WebApiAngularTokenAuthExample
 {
-    [Authorize]
+    [Authorize(Roles = "user")]
     public class ValuesController : ApiController
     {
         // GET api/<controller>
         public IHttpActionResult Get()
         {
-            return Ok(new string[] { "value1", "value2" });
+            ClaimsIdentity claimsIdentity = User.Identity as ClaimsIdentity;
+
+            var claims = claimsIdentity.Claims.Select(x => new { type = x.Type, value = x.Value });
+
+            return Ok(claims);
         }
     }
 }
